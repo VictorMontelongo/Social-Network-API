@@ -1,13 +1,13 @@
 const router = require("express").Router();
 
 // import all api route files here
-const userApiRoutes = require("./api");
+const apiRoutes = require("./api");
 
 // import all html route files here
 // const userHtmlRoutes = require(".html/user.html.routes");
 
 // add api routes to the router
-router.use("/api", userApiRoutes);
+router.use("/api", apiRoutes);
 
 // If error
 router.use((req, res) => {

@@ -1,9 +1,8 @@
-const { ObjectId } = require("mongoose").Types;
-const { Reaction, Thought, User } = require("../models")
+const { Thought, } = require("../models")
 
 module.exports = {
   // get all thoughts
-  async getThoughts(req, res) {
+  async getAllThoughts(req, res) {
     try {
       const payload = await Thought.find().populate(["thought", "reaction"]);
       res.json({ status: "success", payload });
@@ -13,7 +12,7 @@ module.exports = {
     }
   },
   // Get a Thought
-  async getSingleThought(req, res) {
+  async getThoughtById(req, res) {
     try {
       const payload = await Thought.findOne({ _id: req.params.id });
       res.json({ status: "success", payload })
@@ -33,7 +32,7 @@ module.exports = {
     }
   },
   // Update a Thought
-  async updateThought(req, res) {
+  async updateThoughtById(req, res) {
     try {
       const payload = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
@@ -51,9 +50,33 @@ module.exports = {
     }
   },
   // Delete a Thought
-  async deleteThought(req, res) {
+  async deleteThoughtById(req, res) {
     try {
-      const payload = await Thought.findOneAndDelete({ _id: req.params.userId });
+      const payload = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
+      if (!payload) {
+        res.status(404).json({ message: "No user with that ID" });
+      }
+      res.json({ status: "success", payload })
+    } catch (err) {
+      res.status(500).json({ status: error, payload: err.mesage })
+    }
+  },
+
+  async addReaction(req, res) {
+    try {
+      const payload = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $addToSet: { reactions: params.reactionId } }, { new: true, runValidators: true });
+      if (!payload) {
+        res.status(404).json({ message: "No user with that ID" });
+      }
+      res.json({ status: "success", payload })
+    } catch (err) {
+      res.status(500).json({ status: error, payload: err.mesage })
+    }
+  },
+
+  async deleteReaction(req, res) {
+    try {
+      const payload = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $pull: { reactions: { reactionId: params.reactionId } } }, { new: true });
       if (!payload) {
         res.status(404).json({ message: "No user with that ID" });
       }
