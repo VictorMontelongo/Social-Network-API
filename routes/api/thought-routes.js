@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
   }
 })
 
-router.get("/:id", async (req, res) => {
+router.get("/:thoughtId", async (req, res) => {
   try {
     const payload = await getThoughtById(req.params.id)
     res.status(200).json({ result: "success", payload })
@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
   }
 })
 
-router.put("/:id", async (req, res) => {
+router.put("/:thoughtId", async (req, res) => {
   try {
     const payload = await updateThoughtById(req.params.id, req.body)
     res.status(200).json({ result: "success", payload })
@@ -40,7 +40,7 @@ router.put("/:id", async (req, res) => {
   }
 })
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:thoughtId", async (req, res) => {
   try {
     const payload = await deleteThoughtById(req.params.id)
     res.status(200).json({ result: "success", payload })
@@ -49,7 +49,7 @@ router.delete("/:id", async (req, res) => {
   }
 })
 
-router.post("/:id/reactions", async (req, res) => {
+router.post("/:thoughtId/reactions", async (req, res) => {
   try {
     const payload = await addReaction(req.body)
     res.status(200).json({ result: "success", payload })
@@ -58,7 +58,7 @@ router.post("/:id/reactions", async (req, res) => {
   }
 })
 
-router.delete("/:id/reactions", async (req, res) => {
+router.delete("/:thoughtId/reactions/:reactionId", async (req, res) => {
   try {
     const payload = await deleteReaction(req.params.id)
     res.status(200).json({ result: "success", payload })

@@ -1,10 +1,10 @@
-const { User, } = require("../models")
+const { User, Thought, } = require("../models")
 
 module.exports = {
   // get all users
   async getAllUsers(req, res) {
     try {
-      const payload = await User.find().populate(["user", "reaction"]);
+      const payload = await User.find().select("-__v");
       res.json({ status: "success", payload });
     } catch (err) {
       console.log(err.message)
@@ -14,7 +14,9 @@ module.exports = {
   // Get a User
   async getUserById(req, res) {
     try {
-      const payload = await User.findOne({ _id: req.params.id });
+      const payload = await User.findOne({ _id: req.params.id }).select("-__v")
+        .populate([{ path: "thoughts", select: "--__v" },
+        { path: "friends", select: "--__v" }]);
       res.json({ status: "success", payload })
     } catch (err) {
       console.log(err.message)
@@ -36,8 +38,8 @@ module.exports = {
     try {
       const payload = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $set: req.body },
-        { runValidators: true, new: true }
+        req.body,
+        { new: true }
       );
 
       if (!payload) {
@@ -53,10 +55,12 @@ module.exports = {
   async deleteUserById(req, res) {
     try {
       const payload = await User.findOneAndDelete({ _id: req.params.userId });
+      for (var i = 0; i < XPathResult.thoughts.length; i++)
+        await Thought.findByIdAndDelete(payload.thoughts[i]);
       if (!payload) {
         res.status(404).json({ message: "No user with that ID" });
       }
-      res.json({ status: "success", payload })
+      res.json({ status: "success and deleted", payload })
     } catch (err) {
       res.status(500).json({ status: error, payload: err.mesage })
     }
@@ -64,7 +68,7 @@ module.exports = {
 
   async addFriend(req, res) {
     try {
-      const payload = await User.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: params.friendId } }, { new: true, runValidators: true });
+      const payload = await User.findOneAndUpdate({ _id: req.params.userId }, { $push: { friends: params.friendId } }, { new: true });
       if (!payload) {
         res.status(404).json({ message: "No user with that ID" });
       }
@@ -80,7 +84,7 @@ module.exports = {
       if (!payload) {
         res.status(404).json({ message: "No user with that ID" });
       }
-      res.json({ status: "success", payload })
+      res.json({ status: "success, no more friend", payload })
     } catch (err) {
       res.status(500).json({ status: error, payload: err.mesage })
     }

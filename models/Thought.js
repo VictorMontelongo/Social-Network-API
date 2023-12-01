@@ -1,30 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
 
-const thoughtSchema = new Schema(
-  {
-    thoughtText: {
-      type: String,
-      required: true,
-      minLength: [1],
-      maxLength: [300],
-    },
-    username: {
-      type: String,
-      required: true,
-    },
-
-    reactions: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Reaction"
-      }
-    ]
-  },
-  {
-    timestamps: true, //should do the created at? 
-  }
-)
-
 const reactionSchema = new Schema(
   {
     reactionId: {
@@ -35,7 +10,7 @@ const reactionSchema = new Schema(
     reactionBody: {
       type: String,
       required: true,
-      maxlength: 300,
+      maxlength: 280,
     },
 
     username: {
@@ -43,7 +18,6 @@ const reactionSchema = new Schema(
       required: true,
     },
     // nesting the array of info within the reactionSchema
-    reactions: [reactionSchema]
   },
   {
     toJSON: {
@@ -57,8 +31,32 @@ const reactionSchema = new Schema(
     timestamps: true, //should do the created at? 
   }
 )
+const thoughtSchema = new Schema(
+  {
+    thoughtText: {
+      type: String,
+      required: true,
+      minLength: [1],
+      maxLength: [280],
+    },
+    username: {
+      type: String,
+      required: true,
+    },
 
+    reactions: [reactionSchema]
 
-const Thought = mongoose.model("Thought", thoughtSchema);
+  },
+  {
+    timestamps: true, //should do the created at? 
+  }
+)
+
+// creating the reactionCount 
+thoughtSchema.virtual('reactionCount').get(function () {
+  return this.reactions.length;
+});
+
+const Thought = model("Thought", thoughtSchema);
 
 module.exports = Thought;

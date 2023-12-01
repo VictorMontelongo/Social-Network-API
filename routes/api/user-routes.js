@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
   }
 })
 
-router.get("/:id", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
     const payload = await getUserById(req.params.id)
     res.status(200).json({ result: "success", payload })
@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
   }
 })
 
-router.put("/:id", async (req, res) => {
+router.put("/:userId", async (req, res) => {
   try {
     const payload = await updateUserById(req.params.id, req.body)
     res.status(200).json({ result: "success", payload })
@@ -40,7 +40,7 @@ router.put("/:id", async (req, res) => {
   }
 })
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:userId", async (req, res) => {
   try {
     const payload = await deleteUserById(req.params.id)
     res.status(200).json({ result: "success", payload })
@@ -49,7 +49,7 @@ router.delete("/:id", async (req, res) => {
   }
 })
 
-router.post("/:id/friends", async (req, res) => {
+router.post("/:userId/friends/:friendId", async (req, res) => {
   try {
     const payload = await addFriend(req.body)
     res.status(200).json({ result: "success", payload })
@@ -58,7 +58,7 @@ router.post("/:id/friends", async (req, res) => {
   }
 })
 
-router.delete("/:id/friends", async (req, res) => {
+router.delete("/:userId/friends/friendId", async (req, res) => {
   try {
     const payload = await deleteFriend(req.params.id)
     res.status(200).json({ result: "success", payload })
