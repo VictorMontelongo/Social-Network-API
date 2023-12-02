@@ -21,15 +21,10 @@ const reactionSchema = new Schema(
   },
   {
     toJSON: {
-      virtuals: true,
       getters: true,
     },
     id: false,
   },
-
-  {
-    timestamps: true, //should do the created at? 
-  }
 )
 const thoughtSchema = new Schema(
   {
@@ -49,6 +44,14 @@ const thoughtSchema = new Schema(
   },
   {
     timestamps: true, //should do the created at? 
+  },
+  {
+
+    toJSON: {
+      getters: true,
+      virtuals: true,
+    },
+    id: false
   }
 )
 

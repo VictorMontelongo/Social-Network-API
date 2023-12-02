@@ -1,5 +1,7 @@
 const { Schema, model } = require("mongoose");
 
+// email validation
+const validator = require('validator');
 
 const userSchema = new Schema(
   {
@@ -14,7 +16,12 @@ const userSchema = new Schema(
       unique: true,
       // validate: need to add
       required: true,
+      validator: function (v) {
+        return validator.isEmail(v);
+      },
+      message: "{value} is not a vaild email"
     },
+
     thoughts: [
       {
         type: Schema.Types.ObjectId,
@@ -30,17 +37,15 @@ const userSchema = new Schema(
 
   },
   {
+    timestamps: true,
+    id: false,
+  },
+  {
     // sending to json
     toJSON: {
       virtuals: true,
     },
     id: false,
-  },
-  {
-    timestamps: true,
-
-    id: false,
-
   }
 )
 

@@ -4,7 +4,7 @@ module.exports = {
   // get all users
   async getAllUsers(req, res) {
     try {
-      const payload = await User.find().select("-__v");
+      const payload = await User.find().select("-__v")
       res.json({ status: "success", payload });
     } catch (err) {
       console.log(err.message)
