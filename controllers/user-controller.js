@@ -1,4 +1,4 @@
-const { User, Thought, } = require("../models")
+const { User } = require("../models")
 
 module.exports = {
   // get all users
@@ -14,7 +14,7 @@ module.exports = {
   // Get a User
   async getUserById(req, res) {
     try {
-      const payload = await User.findOne({ _id: req.params.id }).select("-__v")
+      const payload = await User.findOne({ _id: req.params.userId }).select("-__v")
         .populate([{ path: "thoughts", select: "--__v" },
         { path: "friends", select: "--__v" }]);
       res.json({ status: "success", payload })
@@ -55,38 +55,38 @@ module.exports = {
   async deleteUserById(req, res) {
     try {
       const payload = await User.findOneAndDelete({ _id: req.params.userId });
-      for (var i = 0; i < XPathResult.thoughts.length; i++)
-        await Thought.findByIdAndDelete(payload.thoughts[i]);
       if (!payload) {
         res.status(404).json({ message: "No user with that ID" });
+        return
       }
       res.json({ status: "success and deleted", payload })
     } catch (err) {
-      res.status(500).json({ status: error, payload: err.mesage })
+      res.status(500).json({ status: "error", payload: err.mesage })
     }
   },
 
   async addFriend(req, res) {
     try {
-      const payload = await User.findOneAndUpdate({ _id: req.params.userId }, { $push: { friends: params.friendId } }, { new: true });
+      const payload = await User.findOneAndUpdate({ _id: req.params.userId }, { $push: { friends: req.params.friendId } }, { new: true });
       if (!payload) {
         res.status(404).json({ message: "No user with that ID" });
+        return
       }
       res.json({ status: "success", payload })
     } catch (err) {
-      res.status(500).json({ status: error, payload: err.mesage })
+      res.status(500).json({ status: "error", payload: err.mesage })
     }
   },
 
   async deleteFriend(req, res) {
     try {
-      const payload = await User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: { friendId: params.friendId } } }, { new: true });
+      const payload = await User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: { friendId: req.params.friendId } } }, { new: true });
       if (!payload) {
         res.status(404).json({ message: "No user with that ID" });
       }
       res.json({ status: "success, no more friend", payload })
     } catch (err) {
-      res.status(500).json({ status: error, payload: err.mesage })
+      res.status(500).json({ status: "error", payload: err.mesage })
     }
   }
 

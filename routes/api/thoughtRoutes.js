@@ -9,13 +9,14 @@ router.route("/")
   .get(getAllThoughts)
   .post(createThought);
 
-router.route("/:thoughtid")
+
+router.route("/:thoughtId")
   .get(getThoughtById)
   .put(updateThoughtById)
   .delete(deleteThoughtById)
 
-router.route("/:id/reaction/:reactionId")
-  .post(addReaction)
+router.route("/:thoughtId/reaction").post(addReaction)
+router.route("/:thoughtId/reaction/:reactionId")
   .delete(deleteReaction)
 
 

@@ -1,11 +1,10 @@
-const { trusted } = require("mongoose");
 const { Thought, User } = require("../models")
 
 module.exports = {
   // get all thoughts
   async getAllThoughts(req, res) {
     try {
-      const payload = await Thought.find().populate(["thought", "reaction"]).select("-__v");
+      const payload = await Thought.find().select("-__v");
       res.json({ status: "success", payload });
     } catch (err) {
       console.log(err.message)
@@ -51,7 +50,7 @@ module.exports = {
       );
 
       if (!payload) {
-        res.status(404).json({ message: "No user with this id!" });
+        res.status(404).json({ message: "No thought with this id!" });
       }
 
       res.json({ status: "success", payload })
@@ -72,7 +71,7 @@ module.exports = {
         }
       );
       if (!payload) {
-        res.status(404).json({ message: "No user with that ID" });
+        res.status(404).json({ message: "Delete did not happen" });
       }
       res.json({ status: "success", payload })
     } catch (err) {
@@ -82,10 +81,10 @@ module.exports = {
 
   async addReaction(req, res) {
     try {
-      const payload = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $push: { reactions: req.body } }, { new: trusted });
+      const payload = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $push: { reactions: req.body } }, { new: true });
       await payload.save();
       if (!payload) {
-        res.status(404).json({ message: "No user with that ID" });
+        res.status(404).json({ message: "No thought found" });
       }
       res.json({ status: "success", payload })
     } catch (err) {
@@ -97,7 +96,7 @@ module.exports = {
     try {
       const payload = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $pull: { reactions: { reactionId: req.params.reactionId } } }, { new: true });
       if (!payload) {
-        res.status(404).json({ message: "No user with that ID" });
+        res.status(404).json({ message: "Thought or reaction is does not exist" });
       }
       res.json({ status: "success delete", payload })
     } catch (err) {

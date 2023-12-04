@@ -7,12 +7,12 @@ router.route("/")
   .get(getAllUsers)
   .post(createUser);
 
-router.route("/:userid")
+router.route("/:userId")
   .put(updateUserById)
   .delete(deleteUserById)
   .get(getUserById)
 
-router.route("/:userid/friend/:friendId")
+router.route("/:userId/friends/:friendId")
   .post(addFriend)
   .delete(deleteFriend)
 
